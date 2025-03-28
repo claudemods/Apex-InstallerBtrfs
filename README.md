@@ -11,7 +11,7 @@ then will then ask you for a location of a .squashfs or .img.xz
 
 default location you might need for .squashfs is /run/archiso/bootmnt/arch/x86_64/airootfs.sfs
 
-after you input a loction 
+after you input a location 
 
 this will then setup your drive as gpt btrfs
 
