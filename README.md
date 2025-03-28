@@ -1,6 +1,20 @@
 # Apex-InstallerBtrfs
 Simple Script To Install Cloned Arch Systems As btrfs 
 
+<div align="center">
+  <a href="https://www.linux.org" target="_blank"><img src="https://img.shields.io/badge/OS-Linux-e06c75?style=for-the-badge&logo=linux" /></a>
+	<a href="https://archlinux.org" target="_blank"><img src="https://img.shields.io/badge/DISTRO-Arch-56b6c2?style=for-the-badge&logo=arch-linux" /></a>
+ 
+<div align="center" style="line-height: 3;">
+  <a href="https://www.deepseek.com/" target="_blank">
+    <img 
+      alt="Homepage" 
+      src="https://i.postimg.cc/Hs2vbbZ8/Deep-Seek-Homepage.png?raw=true" 
+      style="height: 30px; width: auto;" 
+    />
+  </a>
+
+
 you can install a .squashfs or .img.xz
 
 
