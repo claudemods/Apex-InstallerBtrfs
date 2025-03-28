@@ -1,5 +1,5 @@
 # Project name
-TARGET = AppLauncher
+TARGET = apex-installerbtrfs
 
 # Required Qt modules
 QT += core gui
