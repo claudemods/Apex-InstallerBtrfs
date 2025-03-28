@@ -1,4 +1,6 @@
+<div align="center">
 # Apex-InstallerBtrfs
+	<div align="center">
 Simple Script To Install Cloned Arch Systems As btrfs 
 
 <div align="center">
