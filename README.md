@@ -1,9 +1,4 @@
 <div align="center">
-Apex-InstallerBtrfs
-	<div align="center">
-Simple Script To Install Cloned Arch Systems As btrfs 
-
-<div align="center">
   <a href="https://www.linux.org" target="_blank"><img src="https://img.shields.io/badge/OS-Linux-e06c75?style=for-the-badge&logo=linux" /></a>
 	<a href="https://archlinux.org" target="_blank"><img src="https://img.shields.io/badge/DISTRO-Arch-56b6c2?style=for-the-badge&logo=arch-linux" /></a>
  
@@ -16,6 +11,12 @@ Simple Script To Install Cloned Arch Systems As btrfs
     />
   </a>
 
+
+
+<div align="center">
+Apex-InstallerBtrfs
+	<div align="center">
+Simple Script To Install Cloned Arch Systems As btrfs 
 
 you can install a .squashfs or .img.xz
 
