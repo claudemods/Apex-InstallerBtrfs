@@ -1,5 +1,9 @@
 # Apex-InstallerBtrfs
-Simple Script To Install Arch As btrfs Install A .Squashfs Or .Img.xz
+Simple Script To Install Arch As btrfs 
+
+
+
+Install A .Squashfs Or .Img.xz
 this will ask you for a drive e.g /dev/sda or /dev/vda or /dev/sdb ect
 then will then ask you for a location of a .squashfs or .img.xz default location is /run/archiso/bootmnt/arch/x86_64/airootfs.sfs
 This will then setup your Drive As GPT Btrfs
