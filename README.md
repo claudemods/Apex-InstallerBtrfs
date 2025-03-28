@@ -1,5 +1,5 @@
 # Apex-InstallerBtrfs
-Simple Script To Install Arch As btrfs 
+Simple Script To Install Cloned Arch Systems As btrfs 
 
 you can install a .squashfs or .img.xz
 
