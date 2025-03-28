@@ -1,2 +1,2 @@
 # Apex-ArchInstallerBtrfs
-Cpp Script To Install Arch As Btrfs
+Simple Script To Install Arch As btrfs
