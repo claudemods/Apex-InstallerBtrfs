@@ -1,9 +1,9 @@
 # Apex-InstallerBtrfs
 Simple Script To Install Arch As btrfs 
 
+you can install A .squashfs Or .img.xz
 
 
-Install A .Squashfs Or .Img.xz
 this will ask you for a drive e.g /dev/sda or /dev/vda or /dev/sdb ect
 
 
