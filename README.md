@@ -15,7 +15,7 @@ after you input a location
 
 this will then setup your drive as gpt btrfs
 
-Drives Will Be e.g sda1 for efi and e.g sda2 for your linux system
+Drives Will Be e.g sda1 for efi and e.g sda2 for your linux root filesystem
 
 This will not setup a seperate swap
 
