@@ -16,7 +16,7 @@
     />
   </a>
 
-##  [Clone Your System Today](https://github.com/claudemods/ApexArchIsoCreatorGuiAppImage)
+##  [Clone Your Arch System Today](https://github.com/claudemods/ApexArchIsoCreatorGuiAppImage)
 
 
 <div align="center">
