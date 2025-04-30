@@ -28,7 +28,7 @@ void displayProgressBar(int progress) {
     std::cout.flush();
 }
 
-// Function to handle .squashfs installation
+// Function to handle .squashfs or .airootfs.sfs installation
 void installSquashfs(const std::string& drive, const std::string& squashfsFile, const std::string& username) {
     std::vector<std::string> commands = {
         "sudo umount -l " + drive + "* 2>/dev/null",  // Unmount all partitions
@@ -59,7 +59,7 @@ void installSquashfs(const std::string& drive, const std::string& squashfsFile, 
         "sudo umount -l /mnt"  // Unmount root partition
     };
 
-    // Execute all commands for .squashfs
+    // Execute all commands for .squashfs or .airootfs.sfs
     for (size_t i = 0; i < commands.size(); ++i) {
         executeCommand(commands[i]);
 
@@ -141,7 +141,7 @@ int main() {
 )" << "\033[0m" << std::endl;
 
 // Display message in color 38;2;0;255;255m
-std::cout << "\033[38;2;0;255;255mApex Installer Btrfs v1.0\033[0m" << std::endl;
+std::cout << "\033[38;2;0;255;255mApex Installer Btrfs v1.02\033[0m" << std::endl;
 
 std::string drive, filePath, username;
 
@@ -150,22 +150,23 @@ std::cout << "\033[32mEnter the drive to use (e.g., /dev/sdX): \033[0m";
 std::getline(std::cin, drive);
 
 // Ask for the full path to the file (in green)
-std::cout << "\033[32mEnter the full path to the file (e.g., /path/to/filename.img.xz or /path/to/filename.squashfs): \033[0m";
+std::cout << "\033[32mEnter the full path to the file (e.g., /path/to/filename.img.xz, /path/to/filename.squashfs, or /path/to/filename.airootfs.sfs): \033[0m";
 std::getline(std::cin, filePath);
 
 // Ask for the username (in green)
 std::cout << "\033[32mEnter the username for chown command (e.g., yourusername): \033[0m";
 std::getline(std::cin, username);
 
-// Check if the file is .img.xz or .squashfs
+// Check if the file is .img.xz, .squashfs, or .airootfs.sfs
 if (filePath.find(".img.xz") != std::string::npos) {
     installImgXz(drive, filePath, username);
-} else if (filePath.find(".squashfs") != std::string::npos) {
+} else if (filePath.find(".squashfs") != std::string::npos ||
+    filePath.find(".airootfs.sfs") != std::string::npos) {
     installSquashfs(drive, filePath, username);
-} else {
-    std::cerr << "Error: Unsupported file type. Please provide a .img.xz or .squashfs file." << std::endl;
-    return 1;
-}
+    } else {
+        std::cerr << "Error: Unsupported file type. Please provide a .img.xz, .squashfs, or .airootfs.sfs file." << std::endl;
+        return 1;
+    }
 
-return 0;
+    return 0;
 }
