@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Set terminal color to turquoise
+echo -ne "\033]10;#00ffff\007"
+echo -ne "\033]11;#000000\007"
+
 # Color definitions
 RED='\033[0;31m'
 TURQUOISE='\033[38;2;0;255;255m'
@@ -18,9 +22,9 @@ EOF
 echo -e "${TURQUOISE}Apex btrfs installer v1.01${NC}"
 echo ""
 
-# Function to execute a command with output
+# Function to execute a command without showing it
 execute_command() {
-    echo -e "${TURQUOISE}Executing: $1${NC}"
+    echo -e "${TURQUOISE}[EXEC] $1${NC}"
     eval "$1"
     return $?
 }
@@ -160,6 +164,7 @@ execute_command "sudo wipefs --all ${drive}"
 execute_command "sudo parted -s ${drive} mklabel gpt"
 
 # Create partitions
+echo -e "${TURQUOISE}Creating partitions...${NC}"
 execute_command "sudo parted -s ${drive} mkpart primary fat32 1MiB 551MiB"  # EFI System Partition
 execute_command "sudo parted -s ${drive} set 1 esp on"  # Set the ESP flag
 execute_command "sudo parted -s ${drive} mkpart primary btrfs 551MiB 100%"  # Root partition (Btrfs)
@@ -174,6 +179,7 @@ echo -e "${TURQUOISE}Setting up Btrfs subvolumes...${NC}"
 execute_command "sudo mount ${drive}2 /mnt"
 
 # Create Btrfs subvolumes for the folder layout
+echo -e "${TURQUOISE}Creating Btrfs subvolumes...${NC}"
 execute_command "sudo btrfs subvolume create /mnt/@"
 execute_command "sudo btrfs subvolume create /mnt/@cache"
 execute_command "sudo btrfs subvolume create /mnt/@home"
@@ -199,7 +205,12 @@ execute_command "sudo mount ${drive}1 /mnt/boot/efi"
 # Extract the image file directly to the root partition
 echo -e "${TURQUOISE}Extracting system image...${NC}"
 if [[ "$image_file" == *.squashfs || "$image_file" == *.sfs ]]; then
-  execute_command "sudo unsquashfs -f -d /mnt \"$image_file\""
+  echo -e "${TURQUOISE}Starting unsquashfs extraction... This may take a while.${NC}"
+  sudo unsquashfs -f -d /mnt "$image_file"
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}Error: Failed to extract SquashFS image.${NC}"
+    exit 1
+  fi
 else
   echo "Error: Unsupported image format. Only .squashfs and .sfs files are supported."
   exit 1
