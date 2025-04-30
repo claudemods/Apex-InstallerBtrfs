@@ -42,4 +42,5 @@ Drives Will Be e.g sda1 for efi and e.g sda2 for your linux root filesystem
 
 This will not setup a seperate swap
 
-![main menu](https://github.com/user-attachments/assets/ff69074f-b25a-430f-9cc7-33cda246983d)
+![Screenshot_20250430_140145](https://github.com/user-attachments/assets/571ce33a-6c96-4d78-a496-b48e60595fa3)
+
