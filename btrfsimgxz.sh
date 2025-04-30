@@ -166,12 +166,12 @@ execute_command "sudo ./img.xz.sh \"$img_xz_file\""
 execute_command "sudo mount -o loop /mnt/temp/temp.img /mnt/temp_mount"
 
 # Copy contents from the temporary image to the root partition
-execute_command "sudo rsync -a /mnt/temp_mount/ /mnt/"
+execute_command "sudo rsync -aHAxSr /mnt/temp_mount/ /mnt/"
 
 # Set ownership for the user's home directory
 echo -e "${TURQUOISE}Setting up user permissions...${NC}"
-execute_command "sudo chown $username:$username /mnt/home/$username"
-execute_command "sudo chown $username:$username /mnt/home/"
+execute_command "sudo chown $username /mnt/home/$username"
+execute_command "sudo chown $username /mnt/home/"
 
 # Unmount and clean up
 echo -e "${TURQUOISE}Cleaning up temporary files...${NC}"
