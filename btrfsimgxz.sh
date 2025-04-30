@@ -39,26 +39,26 @@ post_install_menu() {
         echo "╚══════════════════════════════════════╝"
         echo -n -e "${NC}Enter your choice (1/2/3): "
         read -r choice
-        
+
         case $choice in
             1)
                 # Chroot into the installed system (using only drive 2)
                 local mount_point="/mnt"
                 local drive2="${drive}2"
-                
+
                 echo -e "${TURQUOISE}Mounting ${drive2} to ${mount_point}${NC}"
                 execute_command "sudo mount ${drive2} ${mount_point}"
-                
+
                 # Bind necessary directories for chroot
                 execute_command "sudo mount --bind /dev ${mount_point}/dev"
                 execute_command "sudo mount --bind /dev/pts ${mount_point}/dev/pts"
                 execute_command "sudo mount --bind /sys ${mount_point}/sys"
                 execute_command "sudo mount --bind /proc ${mount_point}/proc"
-                
+
                 # Chroot into the system
                 echo -e "${TURQUOISE}Entering chroot...${NC}"
                 execute_command "sudo arch-chroot ${mount_point}"
-                
+
                 # Unmount after exiting chroot
                 echo -e "${TURQUOISE}Unmounting chroot environment...${NC}"
                 execute_command "sudo umount ${mount_point}/dev/pts"
