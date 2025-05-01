@@ -88,7 +88,7 @@ This will not setup a seperate swap
 
 
 ![Squashfs Installer](https://github.com/user-attachments/assets/a18648f2-53d9-4bab-9477-6d5a30408f23)
-![Btrfs Installer](https://github.com/user-attachments/assets/fdb9235f-3418-470a-8b47-908e9bac8ae9)
+![Btrfs Installer](https://github.com/user-attachments/assets/38fe2e1f-029f-4c07-ba72-fd7f18813625)
 
 
 
