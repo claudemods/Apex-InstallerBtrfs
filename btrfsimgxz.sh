@@ -14,7 +14,7 @@ cat << "EOF"
 ╚█████╔╝███████╗██║░░██║╚██████╔╝██████╔╝███████╗██║░╚═╝░██║╚█████╔╝██████╔╝██████╔╝
 ░╚════╝░╚══════╝╚═╝░░░░░░╚═════╝░╚═════╝░╚══════╝╚═╝░░░░░╚═╝░╚════╝░╚═════╝░╚═════╝░
 EOF
-echo -e "${TURQUOISE}Apex btrfs installer v1.01${NC}"
+echo -e "${TURQUOISE}Apex Btrfs Installer From img.xz v1.01${NC}"
 echo ""
 
 # Function to execute a command with output
