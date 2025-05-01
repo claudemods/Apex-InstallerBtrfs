@@ -19,7 +19,7 @@
 ##  [Clone Your Arch System Today!](https://github.com/claudemods/ApexArchIsoCreatorGuiAppImage)
 
 
-### This Project Is Being A Pain I Had Working Script But They Fail Currently 07:50am Uk Time 01/05/2025
+### This Project Is Being A Pain I Did Have Working Scripts But They Fail Currently My Usb Was A Mess Before I Cleared It Yesterday 07:50am Uk Time 01/05/2025
 
 ![Screenshot_20250430_140145](https://github.com/user-attachments/assets/571ce33a-6c96-4d78-a496-b48e60595fa3)
 
