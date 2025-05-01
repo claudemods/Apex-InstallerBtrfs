@@ -1,16 +1,10 @@
 #!/bin/bash
+# Set turquoise console color
+echo -e "\033[38;2;0;255;255m"
 
-# Set terminal color to turquoise
-echo -ne "\033]10;#00ffff\007"
-echo -ne "\033]11;#000000\007"
-
-# Color definitions
-RED='\033[0;31m'
-TURQUOISE='\033[38;2;0;255;255m'
-NC='\033[0m' # No Color
-
-# Display ASCII art header
-echo -e "${RED}"
+# ASCII Art Header
+clear
+echo -e "\033[1;31m"
 cat << "EOF"
 ░█████╗░██╗░░░░░░█████╗░██╗░░░██╗██████╗░███████╗███╗░░░███╗░█████╗░██████╗░░██████╗
 ██╔══██╗██║░░░░░██╔══██╗██║░░░██║██╔══██╗██╔════╝████╗░████║██╔══██╗██╔══██╗██╔════╝
@@ -19,227 +13,120 @@ cat << "EOF"
 ╚█████╔╝███████╗██║░░██║╚██████╔╝██████╔╝███████╗██║░╚═╝░██║╚█████╔╝██████╔╝██████╔╝
 ░╚════╝░╚══════╝╚═╝░░░░░░╚═════╝░╚═════╝░╚══════╝╚═╝░░░░░╚═╝░╚════╝░╚═════╝░╚═════╝░
 EOF
-echo -e "${TURQUOISE}Apex btrfs installer v1.01${NC}"
+echo -e "\033[38;2;0;255;255mclaudemods Btrfs Installer v1.01 Build 01/05/2025\033[0m"
 echo ""
 
-# Function to execute a command without showing it
-execute_command() {
-    echo -e "${TURQUOISE}[EXEC] $1${NC}"
-    eval "$1"
-    return $?
-}
+set -euo pipefail  # Strict error handling
 
-# Function to display colored menu
-show_menu() {
-  clear
-  echo -e "${TURQUOISE}"
-  echo "╔══════════════════════════════════════╗"
-  echo "║      Select Image Type               ║"
-  echo "╠══════════════════════════════════════╣"
-  echo "║ 1. squashfs/airootfs.sfs             ║"
-  echo "║ 2. .img.xz                           ║"
-  echo "╚══════════════════════════════════════╝"
-  echo -e "${NC}"
-}
+# --- USER INPUT ---
+read -p "Enter drive (e.g., /dev/nvme0n1): " drive
+read -p "Enter squashfs path: " squashfs_file
+read -p "Enter username: " username
 
-# Post-install menu function
-post_install_menu() {
-    local drive=$1
-    while true; do
-        echo -e "${TURQUOISE}"
-        echo "╔══════════════════════════════════════╗"
-        echo "║        Post-Install Menu             ║"
-        echo "╠══════════════════════════════════════╣"
-        echo "║ 1. Chroot into installed system      ║"
-        echo "║ 2. Reboot                            ║"
-        echo "║ 3. Exit                              ║"
-        echo "╚══════════════════════════════════════╝"
-        echo -n -e "${NC}Enter your choice (1/2/3): "
-        read -r choice
-        
-        case $choice in
-            1)
-                # Chroot into the installed system (using only drive 2)
-                local mount_point="/mnt"
-                local drive2="${drive}2"
-                
-                echo -e "${TURQUOISE}Mounting ${drive2} to ${mount_point}${NC}"
-                execute_command "sudo mount ${drive2} ${mount_point}"
-                
-                # Bind necessary directories for chroot
-                execute_command "sudo mount --bind /dev ${mount_point}/dev"
-                execute_command "sudo mount --bind /dev/pts ${mount_point}/dev/pts"
-                execute_command "sudo mount --bind /sys ${mount_point}/sys"
-                execute_command "sudo mount --bind /proc ${mount_point}/proc"
-                
-                # Chroot into the system
-                echo -e "${TURQUOISE}Entering chroot...${NC}"
-                execute_command "sudo arch-chroot ${mount_point}"
-                
-                # Unmount after exiting chroot
-                echo -e "${TURQUOISE}Unmounting chroot environment...${NC}"
-                execute_command "sudo umount ${mount_point}/dev/pts"
-                execute_command "sudo umount ${mount_point}/dev"
-                execute_command "sudo umount ${mount_point}/sys"
-                execute_command "sudo umount ${mount_point}/proc"
-                execute_command "sudo umount ${mount_point}"
-                ;;
-            2)
-                # Reboot the system
-                echo -e "${TURQUOISE}Rebooting system...${NC}"
-                execute_command "sudo reboot"
-                exit 0
-                ;;
-            3)
-                # Exit the program
-                echo -e "${TURQUOISE}Exiting...${NC}"
-                exit 0
-                ;;
-            *)
-                echo -e "${TURQUOISE}Invalid choice. Please try again.${NC}"
-                sleep 1
-                ;;
-        esac
-    done
-}
+# --- VALIDATE INPUTS ---
+[[ -z "$drive" || -z "$squashfs_file" || -z "$username" ]] && { echo -e "\033[1;31mError: Missing inputs\033[0m" >&2; exit 1; }
+[[ ! -e "$drive" ]] && { echo -e "\033[1;31mError: Drive $drive not found\033[0m" >&2; exit 1; }
+[[ ! -f "$squashfs_file" ]] && { echo -e "\033[1;31mError: Squashfs file missing\033[0m" >&2; exit 1; }
 
-# Main script execution
-echo -e "${TURQUOISE}"
+# --- PARTITIONING ---
+echo -e "\033[38;2;0;255;255m\n[1/6] Partitioning disk...\033[0m"
+sudo umount -l ${drive}* 2>/dev/null || true
+sudo wipefs --all "$drive"
+sudo parted -s "$drive" mklabel gpt
+sudo parted -s "$drive" mkpart primary fat32 1MiB 551MiB
+sudo parted -s "$drive" set 1 esp on
+sudo parted -s "$drive" mkpart primary btrfs 551MiB 100%
 
-# Ask for the drive to use
-read -p "Enter the drive to use (e.g., /dev/sdX): " drive
+# --- FORMATTING ---
+echo -e "\033[38;2;0;255;255m\n[2/6] Formatting partitions...\033[0m"
+sudo mkfs.vfat -F32 "${drive}1"
+sudo mkfs.btrfs -f "${drive}2"
 
-# Show image type menu
+# --- BTRFS SETUP ---
+echo -e "\033[38;2;0;255;255m\n[3/6] Configuring Btrfs subvolumes...\033[0m"
+sudo mount "${drive}2" /mnt
+sudo btrfs subvolume create /mnt/@
+sudo btrfs subvolume create /mnt/@home
+sudo btrfs subvolume create /mnt/@var_cache
+sudo btrfs subvolume create /mnt/@var_log
+sudo umount /mnt
+
+# --- MOUNT HIERARCHY ---
+echo -e "\033[38;2;0;255;255m\n[4/6] Mounting filesystems...\033[0m"
+sudo mount -o subvol=@ "${drive}2" /mnt
+sudo mkdir -p /mnt/{boot/efi,home,var/{cache,log}}
+sudo mount -o subvol=@home "${drive}2" /mnt/home
+sudo mount -o subvol=@var_cache "${drive}2" /mnt/var/cache
+sudo mount -o subvol=@var_log "${drive}2" /mnt/var/log
+sudo mount "${drive}1" /mnt/boot/efi
+
+# --- SYSTEM DEPLOYMENT ---
+echo -e "\033[38;2;0;255;255m\n[5/6] Deploying system...\033[0m"
+sudo unsquashfs -f -d /mnt "$squashfs_file"
+
+# --- FSTAB (WITH FALLBACK) ---
+sudo mkdir -p /mnt/etc
+if ! sudo genfstab -U /mnt > /mnt/etc/fstab 2>/dev/null; then
+    EFI_UUID=$(lsblk -no UUID "${drive}1")
+    ROOT_UUID=$(lsblk -no UUID "${drive}2")
+    sudo tee /mnt/etc/fstab <<EOF
+UUID=$EFI_UUID  /boot/efi  vfat  umask=0077 0 2
+UUID=$ROOT_UUID  /          btrfs  subvol=@,compress=zstd 0 0
+UUID=$ROOT_UUID  /home      btrfs  subvol=@home,compress=zstd 0 0
+UUID=$ROOT_UUID  /var/cache btrfs  subvol=@var_cache,compress=zstd 0 0
+UUID=$ROOT_UUID  /var/log   btrfs  subvol=@var_log,compress=zstd 0 0
+EOF
+fi
+
+# --- CHROOT FIXES ---
+echo -e "\033[38;2;0;255;255m\n[6/6] Configuring bootloader...\033[0m"
+sudo arch-chroot /mnt /bin/bash -c "
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck || exit 1
+    grub-mkconfig -o /boot/grub/grub.cfg || exit 1
+    mkinitcpio -P || exit 1
+" || { echo -e "\033[1;31mChroot commands failed\033[0m" >&2; exit 1; }
+
+# --- FINAL CONFIG ---
+sudo chown -R "$username:" /mnt/home/"$username"
+sudo umount -R /mnt 2>/dev/null || true
+
+# --- POST-INSTALL MENU ---
 while true; do
-  show_menu
-  read -p "Select image type [1-2]: " image_type
-  
-  case $image_type in
-    1)
-      read -p "Enter the full path to the squashfs/airootfs file (e.g., /path/to/filename.squashfs or airootfs.sfs): " image_file
-      break
-      ;;
-    2)
-      read -p "Enter the full path to the .img.xz file: " image_file
-      echo -e "${TURQUOISE}Executing btrfsimgxz.sh script...${NC}"
-      sudo bash btrfsimgxz.sh
-      exit $?
-      ;;
-    *)
-      echo "Invalid option, please try again."
-      sleep 1
-      ;;
-  esac
+    clear
+    echo -e "\033[1;31m"
+    echo "╔══════════════════════════════════════╗"
+    echo "║        Post-Install Menu             ║"
+    echo "╠══════════════════════════════════════╣"
+    echo "║ 1. Chroot into installed system      ║"
+    echo "║ 2. Reboot                            ║"
+    echo "║ 3. Exit                              ║"
+    echo "╚══════════════════════════════════════╝"
+    echo -e "\033[38;2;0;255;255m"
+    read -p "Select option (1-3): " choice
+
+    case $choice in
+        1)  # CHROOT
+            echo -e "\033[38;2;0;255;255mPreparing chroot environment...\033[0m"
+            sudo mount "${drive}2" /mnt -o subvol=@
+            sudo mount "${drive}1" /mnt/boot/efi
+            sudo mount -o subvol=@home "${drive}2" /mnt/home
+            sudo mount -o subvol=@var_cache "${drive}2" /mnt/var/cache
+            sudo mount -o subvol=@var_log "${drive}2" /mnt/var/log
+            echo -e "\033[1;32mEntering chroot. Type 'exit' when done.\033[0m"
+            sudo arch-chroot /mnt /bin/bash
+            sudo umount -R /mnt
+            ;;
+        2)  # REBOOT
+            echo -e "\033[1;33mRebooting in 3 seconds...\033[0m"
+            sleep 3
+            sudo reboot
+            ;;
+        3)  # EXIT
+            exit 0
+            ;;
+        *)
+            echo -e "\033[1;31mInvalid option. Try again.\033[0m"
+            sleep 2
+            ;;
+    esac
 done
-
-# Ask for the username to use in the chown command
-read -p "Enter the username for chown command (e.g., yourusername): " username
-
-# Verify the inputs
-if [[ -z "$drive" || -z "$image_file" || -z "$username" ]]; then
-  echo "Error: Drive, image file path, and username must be provided."
-  exit 1
-fi
-
-# Check if the drive exists
-if [[ ! -e "$drive" ]]; then
-  echo "Error: Drive $drive does not exist."
-  exit 1
-fi
-
-# Check if the image file exists
-if [[ ! -f "$image_file" ]]; then
-  echo "Error: File $image_file does not exist."
-  exit 1
-fi
-
-# Reset color before executing commands
-echo -e "${NC}"
-
-# Continue with the original squashfs processing
-
-# Wipe the drive and create a new GPT partition table
-echo -e "${TURQUOISE}Wiping drive and creating partitions...${NC}"
-execute_command "sudo wipefs --all ${drive}"
-execute_command "sudo parted -s ${drive} mklabel gpt"
-
-# Create partitions
-echo -e "${TURQUOISE}Creating partitions...${NC}"
-execute_command "sudo parted -s ${drive} mkpart primary fat32 1MiB 551MiB"  # EFI System Partition
-execute_command "sudo parted -s ${drive} set 1 esp on"  # Set the ESP flag
-execute_command "sudo parted -s ${drive} mkpart primary btrfs 551MiB 100%"  # Root partition (Btrfs)
-
-# Format partitions
-echo -e "${TURQUOISE}Formatting partitions...${NC}"
-execute_command "sudo mkfs.vfat ${drive}1"  # Format ESP as FAT32
-execute_command "sudo mkfs.btrfs -f ${drive}2"  # Format root partition as Btrfs
-
-# Mount the root partition
-echo -e "${TURQUOISE}Setting up Btrfs subvolumes...${NC}"
-execute_command "sudo mount ${drive}2 /mnt"
-
-# Create Btrfs subvolumes for the folder layout
-echo -e "${TURQUOISE}Creating Btrfs subvolumes...${NC}"
-execute_command "sudo btrfs subvolume create /mnt/@"
-execute_command "sudo btrfs subvolume create /mnt/@cache"
-execute_command "sudo btrfs subvolume create /mnt/@home"
-execute_command "sudo btrfs subvolume create /mnt/@log"
-
-# Unmount the root partition to remount with subvolumes
-execute_command "sudo umount /mnt"
-
-# Mount the root subvolume
-execute_command "sudo mount -o subvol=@ ${drive}2 /mnt"
-
-# Create directories for other subvolumes
-execute_command "sudo mkdir -p /mnt/{boot/efi,cache,home,var/log}"
-
-# Mount other subvolumes
-execute_command "sudo mount -o subvol=@cache ${drive}2 /mnt/cache"
-execute_command "sudo mount -o subvol=@home ${drive}2 /mnt/home"
-execute_command "sudo mount -o subvol=@log ${drive}2 /mnt/var/log"
-
-# Mount the EFI System Partition (ESP) to /boot/efi
-execute_command "sudo mount ${drive}1 /mnt/boot/efi"
-
-# Extract the image file directly to the root partition
-echo -e "${TURQUOISE}Extracting system image...${NC}"
-if [[ "$image_file" == *.squashfs || "$image_file" == *.sfs ]]; then
-  echo -e "${TURQUOISE}Starting unsquashfs extraction... This may take a while.${NC}"
-  sudo unsquashfs -f -d /mnt "$image_file"
-  if [ $? -ne 0 ]; then
-    echo -e "${RED}Error: Failed to extract SquashFS image.${NC}"
-    exit 1
-  fi
-else
-  echo "Error: Unsupported image format. Only .squashfs and .sfs files are supported."
-  exit 1
-fi
-
-# Set ownership for the user's home directory
-echo -e "${TURQUOISE}Setting up user permissions...${NC}"
-execute_command "sudo chown $username /mnt/home/$username"
-execute_command "sudo chown $username /mnt/home/"
-
-# Generate fstab
-echo -e "${TURQUOISE}Generating fstab...${NC}"
-execute_command "sudo genfstab -U -p /mnt >> /mnt/etc/fstab"
-
-# Execute the chrootfix.sh script
-echo -e "${TURQUOISE}Running chrootfix.sh...${NC}"
-execute_command "sudo ./chrootfix.sh"
-
-# Unmount everything
-echo -e "${TURQUOISE}Unmounting partitions...${NC}"
-execute_command "sudo umount -l /mnt/boot/efi"
-execute_command "sudo umount -l /mnt"
-
-# Installation complete message
-echo -e "${TURQUOISE}"
-echo "╔══════════════════════════════════════╗"
-echo "║      Installation Complete!         ║"
-echo "╚══════════════════════════════════════╝"
-echo -e "${NC}"
-
-# Show post-install menu
-post_install_menu "$drive"
