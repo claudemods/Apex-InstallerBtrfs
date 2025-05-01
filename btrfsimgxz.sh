@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (C) 2019-2025 by claudemods 
 # Color definitions
 RED='\033[0;31m'
 TURQUOISE='\033[38;2;0;255;255m'
