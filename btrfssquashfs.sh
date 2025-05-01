@@ -13,7 +13,7 @@ cat << "EOF"
 ╚█████╔╝███████╗██║░░██║╚██████╔╝██████╔╝███████╗██║░╚═╝░██║╚█████╔╝██████╔╝██████╔╝
 ░╚════╝░╚══════╝╚═╝░░░░░░╚═════╝░╚═════╝░╚══════╝╚═╝░░░░░╚═╝░╚════╝░╚═════╝░╚═════╝░
 EOF
-echo -e "\033[38;2;0;255;255mclaudemods Btrfs Installer v1.01 Build 01/05/2025\033[0m"
+echo -e "\033[38;2;0;255;255mclaudemods Btrfs Installer From Squashfs v1.01 Build 01/05/2025\033[0m"
 echo ""
 
 set -euo pipefail  # Strict error handling
