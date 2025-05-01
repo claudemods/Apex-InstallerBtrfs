@@ -30,7 +30,6 @@ read -p "Enter username: " username
 
 # --- PARTITIONING ---
 echo -e "\033[38;2;0;255;255m\n[1/6] Partitioning disk...\033[0m"
-sudo umount -l ${drive}* 2>/dev/null || true
 sudo wipefs --all "$drive"
 sudo parted -s "$drive" mklabel gpt
 sudo parted -s "$drive" mkpart primary fat32 1MiB 551MiB
