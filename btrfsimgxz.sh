@@ -74,6 +74,9 @@ post_install_menu() {
                 echo -e "${TURQUOISE}Mounting partitions for chroot...${NC}"
                 execute_command "sudo mount ${drive}1 /mnt/boot/efi"  # EFI partition
                 execute_command "sudo mount -o subvol=@ ${drive}2 /mnt"  # Root subvolume
+                execute_command "sudo mount -o subvol=@home "${drive}2" /mnt/home"  # Root subvolume
+                execute_command "sudo mount -o subvol=@var_cache "${drive}2" /mnt/var/cache"  # Root subvolume
+                execute_command "sudo mount -o subvol=@var_log "${drive}2" /mnt/var/log"  # Root subvolume
 
                 # Chroot into the system
                 echo -e "${TURQUOISE}Entering chroot...${NC}"
