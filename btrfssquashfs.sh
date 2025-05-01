@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (C) 2019-2025 by claudemods 
 # Set turquoise console color
 echo -e "\033[38;2;0;255;255m"
 
