@@ -91,5 +91,5 @@ This will not setup a seperate swap
 ![Btrfs Installer](https://github.com/user-attachments/assets/38fe2e1f-029f-4c07-ba72-fd7f18813625)
 
 
-
+### Copyright (C) 2019-2025 by claudemods 
 
