@@ -87,6 +87,11 @@ Drives Will Be e.g sda1 for efi and e.g sda2 for your linux root filesystem
 This will not setup a seperate swap
 
 
+### Information
+- files have been update in the releases sorry they were wrong before
+- all working but new colours and fixes to show processes coming soon!
+
+
 ![Squashfs Installer](https://github.com/user-attachments/assets/a18648f2-53d9-4bab-9477-6d5a30408f23)
 ![Btrfs Installer](https://github.com/user-attachments/assets/38fe2e1f-029f-4c07-ba72-fd7f18813625)
 
