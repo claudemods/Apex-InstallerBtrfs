@@ -36,7 +36,7 @@ Simple Script To Install Cloned Arch Systems As btrfs
 
  
 
-you can install a .squashfs or .img.xz
+you can install from root directory or use a .squashfs or .img.xz
  
 
 
