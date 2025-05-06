@@ -95,6 +95,7 @@ all scripts are working but new colours and fixes to show processes coming soon!
 
 ![Squashfs Installer](https://github.com/user-attachments/assets/a18648f2-53d9-4bab-9477-6d5a30408f23)
 ![Btrfs Installer](https://github.com/user-attachments/assets/38fe2e1f-029f-4c07-ba72-fd7f18813625)
+![Btrfs Rsync Installer](https://github.com/user-attachments/assets/398a0886-b79e-4d6f-8c3f-9a6382779b1e)
 
 
 ### Copyright (C) 2019-2025 by claudemods 
