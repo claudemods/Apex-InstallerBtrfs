@@ -60,7 +60,7 @@ sudo mount "${drive}1" /mnt/boot/efi
 
 # --- SYSTEM DEPLOYMENT (RSYNC EVERYTHING FROM ROOT) ---
 echo -e "\033[38;2;0;255;255m\n[5/6] RSYNC entire root filesystem...\033[0m"
-sudo rsync -aHAXSr / /mnt/
+sudo rsync -aHAXSr --exclude=/mnt / /mnt/
 
 # --- FSTAB (WITH FALLBACK) ---
 sudo mkdir -p /mnt/etc
